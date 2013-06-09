@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>updates - One Less JPEG</title>
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width" />
+	<link rel="stylesheet" href="css/style.css" />
+	<meta name="author" content="Justin Avery">
+	<!--[if lt IE 9]> <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> <![endif]-->
+	<script type="text/javascript" src="//use.typekit.net/ihs8bzr.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29071607-3']);
+  _gaq.push(['_setDomainName', 'onelessjpg.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+	</head>
+<body>
+	<div id="wrapper">
+				<header><h1><a href="index.html">One Less JPEG</a></h1></header>
+		<h2>Updates</h2>
+		<p>Andy Davies sent me through this email to instruct how this test could be done better.  I'm hoping to spend some vitual time with Andy to correct those tests and make this a better resource</p>
+		<hr />
+    <p>One Less JPG is a really cool idea as building fast webpages is all about tradeoffs and we're generally not very good about understanding the tradeoffs being made...</p>
+
+    <p>I've got some concerns about the tests but I'm not sure whether they will make a material difference to the outcome or not yet.</p>
+
+    <p>Looking at the page source, its clear that the JS is optimised for good performance where as the images aren't...</p>
+
+
+    <h3>JS</h3>
+
+    <p>The JS is minified and compressed to reduce it's size and delivered via Google CDN which has the advantage of an single DNS lookup and will be closer to the user.</p>
+
+    <p>JS blocks the rendering of all DOM elements below it so including it at the foot of the page mitigates against this.</p>
+
+
+    <h2>Images</h2>
+
+    <p>The images on the other hand aren't optimised for size, I ran them through Jpegmini for the JPEGs and ImageOptim for the PNG to optimise their sizes and reduce their total size by 42%</p>
+
+    Before  After
+    <ul>
+    <li>blast-responsive-example.jpeg 53,846  40,457</li>
+    <li>nealite-responsive-design.jpeg  85,511  49,275</li>
+    <li>responsive-templates.jpeg 34,389  27,021</li>
+    <li>responsive-web-design-chart1.jpeg 70,458  44,047</li>
+    <li>responsive00.jpeg 155,106 67,687</li>
+    <li>responsive_web_design.png 5,296 2,741</li>
+</ul>
+    <p>I've put the <a href="https://www.dropbox.com/sh/7ta1uy36h9iz1op/YAb_EC1oB7/onelessjpg">optimised images here</a></p>
+
+    <p>The other issue with the images is they are hosted by a variety of different servers - each will require a separate DNS lookup and the servers have different levels of performance.</p>
+
+    <p>On the page with 7 images one of the TCP connections would be re-used is they were served from the same host but I'm not sure if this will have a positive or negative effect on the outcome.</p>
+
+
+    <h3>TypeKit</h3>
+
+   <p>Typekit is the real joker in pack as it's performance seems to be inconsistent when measured using Web Page test.</p>
+
+    <p>Compare the time for the typekit servers to respond for (ihs8bzr.js) for these two tests:</p>
+    <ul>
+      <li><a href="http://www.webpagetest.org/result/120831_FA_13a35788b8cf20070e22670a07ec5fb5/1/details/">http://www.webpagetest.org/result/120831_FA_13a35788b8cf20070e22670a07ec5fb5/1/details/</a></li>
+    <li><a href="http://www.webpagetest.org/result/120831_3X_df41ec16aa9286727bdd5bdb8ae9bdc0/1/details/">http://www.webpagetest.org/result/120831_3X_df41ec16aa9286727bdd5bdb8ae9bdc0/1/details/</a></li></ul>
+
+    <p>Also if you compare the tests for images only and JS only, you'll see that typekit is blocking the start render event, and the JS files are downloaded before start render has fired but the images don't start downloading until after start render has fired:</p>
+
+<ul> <li>   http://www.webpagetest.org/result/120831_R0_66333c94029ef49f90bc1aaa3e0e2be1/1/details/</li>
+    <li>http://www.webpagetest.org/result/120831_7F_792c8a4a7d77ad0e7bcbd9c21ad856cf/1/details/</li>
+</ul>
+
+    <h3>Tests</h3>
+
+    <p>Not sure where you ran your tests from but as I think you're hosted in the US, I've run tests using the Dulles instance of Web Page Test using Chrome (might need to try different browsers too) at 1.5Mbps</p>
+<ul>
+    <li>Home - http://www.webpagetest.org/result/120831_NH_de2e1413e9e6e5bb544db19226811f2a/1/details/</li>
+    <li>Images only - http://www.webpagetest.org/result/120831_FA_13a35788b8cf20070e22670a07ec5fb5/1/details/</li>
+    <li>JS - http://www.webpagetest.org/result/120831_7F_792c8a4a7d77ad0e7bcbd9c21ad856cf/1/details/</li>
+    <li>JS + images - http://www.webpagetest.org/result/120831_R0_66333c94029ef49f90bc1aaa3e0e2be1/1/details/</li>
+</ul>
+
+    <h3>Final Thoughts</h3>
+
+    <p>The tests as currently designed follow the patterns I see everyday when looking at the performance of websites and so are realistic compared to everyday practice. Of course I'm one of the people who is trying to change everyday practice to account for improved performance.</p>
+
+<p>    The other tests I would consider are:</p>
+<ol>
+    <li>Without typekit</li>
+    <li>Without typekit and with optimised images on the same host</li>
+    <li>Without typekit, with optimised images and JS on same host</li>
+
+    <li>2 & 3 with typekit</li>
+    </ol>
+    <p>If I was only going to do one test I would do 2</p>
+
+    <p>Be really interested in your thoughts... the web and the interaction of networks, browsers, code etc. is quite a complex beast!</p>
+
+	</div>
+</body>
+</html>
